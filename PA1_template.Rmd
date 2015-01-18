@@ -1,25 +1,45 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+##Loading and preprocessing the data
+
+```{r}
+df <- read.csv("activity.csv")
+gd <- complete.cases(df)
+dfg <- df[gd,]
+ag <- aggregate(steps ~ interval, data=dfg, mean)
+
+```
+##What is mean total number of steps taken per day
+
+```{r}
+hist(ag$steps, main="Histogram of Number of Steps", xlab="Number of steps")
+summary(ag)
+```
+**From the above data it is evident that the mean of number of steps is 37.38 and the meadian is 34.113**
+
+##What is the average daily activity pattern?
+
+```{r}
+plot(ag[,1],ag[,2], type="l", xlab="Interval", ylab="Number of Steps", main="Plot of Interval and number of steps")
+```
+
+**asserted by the graph maximum value is 206 and it is for and was between interval of 830 to 835**
+
+##Imputing missing values
+```{r}
+dfng <- df[!gd,]
+dim(dfng)
+mg <- merge(dfng,ag,by.x="interval",by.y="interval") ##Merging the average values with dataframe of NAs
+mgg <- merge(df,mg,by.x="date",by.y="date") ##Merging the values of NA with that of the original data frame
+colnames(mgg)[6] <- "Nsteps"
+agg <- aggregate(Nsteps~interval.y, data=mgg, mean)
+hist(agg[,2], main="Histogram of Number of Steps", xlab="Number of steps")
+summary(agg)
+
+```
+
+**From the above data it is evident that the number of NAs are 2304**
+**Mean of the values is 37.383 and the median is 34.113**
+**Did not find much difference after imputing NAs**
 
 
-## Loading and preprocessing the data
 
-
-
-## What is mean total number of steps taken per day?
-
-
-
-## What is the average daily activity pattern?
-
-
-
-## Imputing missing values
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
+##
